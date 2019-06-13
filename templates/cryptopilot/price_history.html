@@ -1,0 +1,121 @@
+{% extends "cryptopilot/base.html" %}
+
+{% block content %}
+
+    {% for price_history in price_histories %}
+        <h1>{{ price_history.currency.currency_id }}</h1>
+        <canvas id="-canvas" class="col-6"></canvas>
+        <script>
+            let context = $("#-canvas")[0].getContext("2d");
+            {#let lineChart = new Chart(context, {#}
+            {#    type: "line",#}
+            {#    data: {#}
+            {#        datasets: [{#}
+            {#            label: "{{ price_history.currency_id }}",#}
+            {#            data: [2, 6, 3, 2, 5, 7 ,23, 2, 4]#}
+            {#        }]#}
+            {#    }#}
+            {# });#}
+            var myLineChart = new Chart(context, {
+                type: 'line',
+                data: {
+                    labels: ["January", "February", "March", "April", "May", "June", "July"],
+                    datasets: [{
+                        label: "My First dataset",
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        backgroundColor: [
+                            'rgba(105, 0, 132, .2)',
+                        ],
+                        borderColor: [
+                            'rgba(200, 99, 132, .7)',
+                        ],
+                        borderWidth: 2
+                    },
+                        {
+                            label: "My Second dataset",
+                            data: [28, 48, 40, 19, 86, 27, 90],
+                            backgroundColor: [
+                                'rgba(0, 137, 132, .2)',
+                            ],
+                            borderColor: [
+                                'rgba(0, 10, 130, .7)',
+                            ],
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        </script>
+    {% endfor %}
+
+    <div class="modal fade" role="dialog" id="download-dialog" aria-labelledby="download-dialog-title"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form action="{% url 'download_prices' %}" method="post" class="form">
+                {% csrf_token %}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="download-dialog-title">Download Prices</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>This will download the last 2 years of minute by minute data (that doesn't exist). This may
+                            take awhile.</p>
+                        <input type="text" class="form-control" placeholder="Currency ID" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Download</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <button type="button" id="download-button" class="btn btn-primary btn-block mt-5"
+            data-toggle="modal" data-target="#download-dialog">
+        Download More Price Data
+    </button>
+
+    <div id="download-progress-bar-container" class="progress mt-1">
+        <div id="download-progress-bar" class="progress-bar" role="progressbar" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    <script>
+        var download_button;
+        var download_progress_bar;
+        var download_progress_bar_container;
+
+        function setup() {
+            download_button = $("#download-button")
+            download_progress_bar = $("#download-progress-bar")
+            download_progress_bar_container = $("#download-progress-bar-container")
+            download_progress_bar_container.hide()
+        }
+
+        function refresh() {
+            $.ajax({
+                type: 'get',
+                url: '/trader/download_prices_progress/',
+                success: function (data) {
+                    download_button.prop('disabled', data.downloading)
+                    if (data.downloading)
+                    {
+                        download_progress_bar_container.show()
+                        download_progress_bar.attr("aria-valuenow", data.progress)
+                        download_progress_bar.css("width", data.progress + "%")
+                    }
+                    else
+                    { 
+                        download_progress_bar_container.hide()
+                    }
+                }
+            });
+        }
+    </script>
+{% endblock %}

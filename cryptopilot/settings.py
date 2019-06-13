@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'crypto_trader.apps.CryptoTraderConfig',
     'crypto_coinbase.apps.CryptoCoinbaseConfig',
     'bootstrap4',
+    'livereload',
+    'chartjs',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'livereload.middleware.LiveReloadScript'
 ]
 
 ROOT_URLCONF = 'cryptopilot.urls'
@@ -126,3 +129,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Celery
+CELERY_USER =  os.environ.get('BROKER_USER', '')
+CELERY_PASS =  os.environ.get('BROKER_PASS', '')
+CELERY_VHOST =  os.environ.get('BROKER_VHOST', '')
+CELERY_BROKER_URL = 'amqp://' + CELERY_USER + ':' + CELERY_PASS + '@localhost:5672/' + CELERY_VHOST
+CELERY_RESULT_BACKEND = 'amqp://' + CELERY_USER + ':' + CELERY_PASS + '@localhost:5672/' + CELERY_VHOST
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

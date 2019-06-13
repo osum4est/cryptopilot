@@ -13,11 +13,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.views.generic import RedirectView
 
 from cryptopilot import views
 
 urlpatterns = [
-    path('index/', views.index),
+    path('', RedirectView.as_view(url="dashboard/")),
+    path('dashboard/', views.dashboard, name="dashboard"),
+    path('price_history/', views.price_history, name="price_history"),
+
+    path('trader/', include('crypto_trader.urls'))
 ]

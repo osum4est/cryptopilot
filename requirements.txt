@@ -2,3 +2,6 @@ Django==2.2.2
 psycopg2
 cbpro
 django-bootstrap4
+django-livereload-server
+django-chartjs
+celery
