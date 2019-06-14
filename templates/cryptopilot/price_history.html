@@ -66,7 +66,7 @@
                     <div class="modal-body">
                         <p>This will download the last 2 years of minute by minute data (that doesn't exist). This may
                             take awhile.</p>
-                        <input type="text" class="form-control" placeholder="Currency ID" required>
+                        <input name="currency_id" type="text" class="form-control" placeholder="Currency ID" required>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -87,15 +87,15 @@
     </div>
 
     <script>
-        var download_button;
-        var download_progress_bar;
-        var download_progress_bar_container;
+        let download_button;
+        let download_progress_bar;
+        let download_progress_bar_container;
 
         function setup() {
-            download_button = $("#download-button")
-            download_progress_bar = $("#download-progress-bar")
-            download_progress_bar_container = $("#download-progress-bar-container")
-            download_progress_bar_container.hide()
+            download_button = $("#download-button");
+            download_progress_bar = $("#download-progress-bar");
+            download_progress_bar_container = $("#download-progress-bar-container");
+            download_progress_bar_container.hide();
         }
 
         function refresh() {
@@ -103,16 +103,22 @@
                 type: 'get',
                 url: '/trader/download_prices_progress/',
                 success: function (data) {
-                    download_button.prop('disabled', data.downloading)
+                    if (data.error)
+                    {
+                        console.error(data.error);
+                        return;
+                    }
+
+                    download_button.prop('disabled', data.downloading);
                     if (data.downloading)
                     {
-                        download_progress_bar_container.show()
-                        download_progress_bar.attr("aria-valuenow", data.progress)
-                        download_progress_bar.css("width", data.progress + "%")
+                        download_progress_bar_container.show();
+                        download_progress_bar.attr("aria-valuenow", data.progress);
+                        download_progress_bar.css("width", data.progress + "%");
                     }
                     else
                     { 
-                        download_progress_bar_container.hide()
+                        download_progress_bar_container.hide();
                     }
                 }
             });

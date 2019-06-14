@@ -13,8 +13,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -60,8 +60,7 @@ ROOT_URLCONF = 'cryptopilot.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,7 +75,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cryptopilot.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -90,7 +88,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -110,7 +107,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -124,18 +120,20 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
 
 # Celery
-CELERY_USER =  os.environ.get('BROKER_USER', '')
-CELERY_PASS =  os.environ.get('BROKER_PASS', '')
-CELERY_VHOST =  os.environ.get('BROKER_VHOST', '')
+CELERY_USER = os.environ.get('BROKER_USER', '')
+CELERY_PASS = os.environ.get('BROKER_PASS', '')
+CELERY_VHOST = os.environ.get('BROKER_VHOST', '')
 CELERY_BROKER_URL = 'amqp://' + CELERY_USER + ':' + CELERY_PASS + '@localhost:5672/' + CELERY_VHOST
 CELERY_RESULT_BACKEND = 'amqp://' + CELERY_USER + ':' + CELERY_PASS + '@localhost:5672/' + CELERY_VHOST
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+# Which trade api to use
+TRADE_API = "coinbase"
