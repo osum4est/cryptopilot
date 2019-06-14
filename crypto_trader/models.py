@@ -8,11 +8,11 @@ class Currency(models.Model):
 
 
 class Candle(models.Model):
-    currency_id = models.CharField(max_length=16, unique=True, null=False)
+    currency_id = models.CharField(max_length=16, null=False)
     granularity = models.IntegerField()
-    time = models.BigIntegerField()
-    low = models.DecimalField(max_digits=12, decimal_places=4)
-    high = models.DecimalField(max_digits=12, decimal_places=4)
-    open = models.DecimalField(max_digits=12, decimal_places=4)
-    close = models.DecimalField(max_digits=12, decimal_places=4)
-    volume = models.BigIntegerField()
+    time = models.DateTimeField()
+    low = models.DecimalField(max_digits=12, decimal_places=2)
+    high = models.DecimalField(max_digits=12, decimal_places=2)
+    open = models.DecimalField(max_digits=12, decimal_places=2)
+    close = models.DecimalField(max_digits=12, decimal_places=2)
+    volume = models.DecimalField(max_digits=12, decimal_places=2)
