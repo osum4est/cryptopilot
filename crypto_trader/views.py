@@ -65,6 +65,9 @@ class PriceHistoryGraphView(BaseLineChartView):
     def get_providers(self):
         return [self.kwargs["c_id"]]
 
+    def get_colors(self):
+        yield list((242, 169, 0))
+
     def get_data(self):
         time_multiplier = int(self.kwargs["length"][0])
         total_time = self.time_lengths[self.kwargs["length"][1:]] * time_multiplier
