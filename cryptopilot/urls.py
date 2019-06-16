@@ -21,7 +21,8 @@ from cryptopilot import views
 urlpatterns = [
     path('', RedirectView.as_view(url="dashboard/")),
     path('dashboard/', views.dashboard, name="dashboard"),
-    path('price_history/', views.price_history, name="price_history"),
+    path('simulation/', views.simulation, name="simulation"),
+    path('data_loader/', views.data_loader, name="data_loader"),
 
     path('trader/', include('crypto_trader.urls'))
 ]

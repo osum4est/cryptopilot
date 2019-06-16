@@ -15,7 +15,7 @@
     <title>CryptoPilot</title>
 </head>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-primary">
     <a class="navbar-brand" href="#">CryptoPilot</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,44 +24,75 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             {% url 'dashboard' as dashboard_url %}
-            {% url 'price_history' as price_history_url %}
+            {% url 'simulation' as simulation_url %}
+            {% url 'data_loader' as data_loader_url %}
             <li class="nav-item {% if request.path == dashboard_url %}active{% endif %}">
                 <a class="nav-link" href="{{ dashboard_url }}">Dashboard</a>
             </li>
-            <li class="nav-item {% if request.path == price_history_url %}active{% endif %}">
-                <a class="nav-link" href="{{ price_history_url }}">Price History</a>
+            <li class="nav-item {% if request.path == simulation_url %}active{% endif %}">
+                <a class="nav-link" href="{{ simulation_url }}">Simulation</a>
+            </li>
+            <li class="nav-item {% if request.path == data_loader_url %}active{% endif %}">
+                <a class="nav-link" href="{{ data_loader_url }}">Data Loader</a>
             </li>
         </ul>
     </div>
 </nav>
 
 <body>
-<div class="container">
+<div class="container mt-5">
     {% block content %}{% endblock %}
 </div>
-
 </body>
 
 <script>
-$(document).ready(function() {
-    if (typeof(setup) === 'function')
-        setup();
-        
-    if (typeof(refresh) === 'function')
-        refresh();
+    $(document).ready(function () {
+        if (typeof (setup) === 'function')
+            setup();
 
-    if (typeof(refresh_slow) === 'function')
-        refresh_slow();
-
-    setInterval(function(){
-        if (typeof(refresh) === 'function')
+        if (typeof (refresh) === 'function')
             refresh();
-    }, 1000);
 
-    setInterval(function(){
-        if (typeof(refresh_slow) === 'function')
+        if (typeof (refresh_slow) === 'function')
             refresh_slow();
-    }, 5000);
-});
+
+        setInterval(function () {
+            if (typeof (refresh) === 'function')
+                refresh();
+        }, 1000);
+
+        setInterval(function () {
+            if (typeof (refresh_slow) === 'function')
+                refresh_slow();
+        }, 5000);
+    });
+
+    function fill_table(table, data) {
+        table.html("");
+        let data_container = $("<thead/>");
+
+        $.each(data, function (i, data_row) {
+            let row = $("<tr/>");
+
+            $.each(data_row, function (j, data_value) {
+                let item;
+
+                if (i === 0 || j === 0)
+                    item = $("<th/>");
+                else
+                    item = $("<td/>");
+
+                item.html(data_value);
+                row.append(item)
+            });
+            data_container.append(row);
+            if (i === 0) {
+                table.append(data_container);
+                data_container = $("<tbody/>");
+            }
+        });
+
+        table.append(data_container);
+    }
 </script>
 </html>

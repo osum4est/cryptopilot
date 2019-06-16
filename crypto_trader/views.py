@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from celery.result import AsyncResult
 from chartjs.views.lines import BaseLineChartView
-from django.db.models import Avg, F
+from django.db.models import Avg, F, Min, Max
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect
 
@@ -20,7 +20,7 @@ def download_prices(request):
         return HttpResponseNotAllowed("Download already running.")
 
     download_task_id = download_prices_task.delay(request.POST['currency_id']).id
-    return redirect("/price_history")
+    return redirect("/data_loader")
 
 
 def download_prices_progress(request):
@@ -47,6 +47,21 @@ def download_prices_progress(request):
         data["progress"] = "0"
 
     return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+def get_available_data(request):
+    data = [["Currency", "Start Date", "End Date", "Min Price", "Max Price"]]
+    data.extend(
+        [list(d.values()) for d in
+         Candle.objects.values("currency_id").annotate(Min("time"), Max("time"), Min("low"), Max("high"))])
+    return HttpResponse(json.dumps(data, default=default_json), content_type='application/json')
+
+
+def default_json(value):
+    if isinstance(value, datetime):
+        return value.strftime("%m/%d/%Y")
+
+    return str(value)
 
 
 class PriceHistoryGraphView(BaseLineChartView):

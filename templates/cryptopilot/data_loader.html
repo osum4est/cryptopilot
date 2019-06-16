@@ -1,55 +1,10 @@
 {% extends "cryptopilot/base.html" %}
 
 {% block content %}
-
-    {% for price_history in price_histories %}
-        <h1>{{ price_history.currency.currency_id }}</h1>
-        <canvas id="-canvas" class="col-6"></canvas>
-        <script>
-            let context = $("#-canvas")[0].getContext("2d");
-            {#let lineChart = new Chart(context, {#}
-            {#    type: "line",#}
-            {#    data: {#}
-            {#        datasets: [{#}
-            {#            label: "{{ price_history.currency_id }}",#}
-            {#            data: [2, 6, 3, 2, 5, 7 ,23, 2, 4]#}
-            {#        }]#}
-            {#    }#}
-            {# });#}
-            var myLineChart = new Chart(context, {
-                type: 'line',
-                data: {
-                    labels: ["January", "February", "March", "April", "May", "June", "July"],
-                    datasets: [{
-                        label: "My First dataset",
-                        data: [65, 59, 80, 81, 56, 55, 40],
-                        backgroundColor: [
-                            'rgba(105, 0, 132, .2)',
-                        ],
-                        borderColor: [
-                            'rgba(200, 99, 132, .7)',
-                        ],
-                        borderWidth: 2
-                    },
-                        {
-                            label: "My Second dataset",
-                            data: [28, 48, 40, 19, 86, 27, 90],
-                            backgroundColor: [
-                                'rgba(0, 137, 132, .2)',
-                            ],
-                            borderColor: [
-                                'rgba(0, 10, 130, .7)',
-                            ],
-                            borderWidth: 2
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true
-                }
-            });
-        </script>
-    {% endfor %}
+    <div class="table-responsive">
+        <table id="available_currencies" class="table table-hover">
+        </table>
+    </div>
 
     <div class="modal fade" role="dialog" id="download-dialog" aria-labelledby="download-dialog-title"
          aria-hidden="true">
@@ -77,12 +32,12 @@
         </div>
     </div>
 
-    <button type="button" id="download-button" class="btn btn-primary btn-block mt-5"
+    <button type="button" id="download-button" class="btn btn-primary btn-block"
             data-toggle="modal" data-target="#download-dialog">
         Download More Price Data
     </button>
 
-    <div id="download-progress-bar-container" class="progress mt-1">
+    <div id="download-progress-bar-container" class="progress  mt-1">
         <div id="download-progress-bar" class="progress-bar" role="progressbar" aria-valuenow="64" aria-valuemin="0"
              aria-valuemax="100"></div>
     </div>
@@ -115,6 +70,10 @@
                     } else {
                         download_progress_bar_container.hide();
                     }
+                });
+            $.get('{% url "get_available_data" %}',
+                function (data) {
+                    fill_table($("#available_currencies"), data)
                 });
         }
     </script>

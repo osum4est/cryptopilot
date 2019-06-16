@@ -5,5 +5,9 @@ def dashboard(request):
     return render(request, 'cryptopilot/dashboard.html')
 
 
-def price_history(request):
-    return render(request, 'cryptopilot/price_history.html')
+def simulation(request):
+    return render(request, 'cryptopilot/simulation.html')
+
+
+def data_loader(request):
+    return render(request, 'cryptopilot/data_loader.html')
