@@ -1,9 +1,13 @@
 import json
+from datetime import datetime, timedelta
 
 from celery.result import AsyncResult
+from chartjs.views.lines import BaseLineChartView
+from django.db.models import Avg, F
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect
 
+from crypto_trader.models import Candle
 from crypto_trader.trader.price_downloader import download_prices_task
 
 download_task_id = ""
@@ -43,3 +47,36 @@ def download_prices_progress(request):
         data["progress"] = "0"
 
     return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+class PriceHistoryGraphView(BaseLineChartView):
+    resolution = 50
+    time_lengths = {
+        "hour": timedelta(hours=1),
+        "day": timedelta(days=1),
+        "week": timedelta(weeks=1),
+        "month": timedelta(days=30),
+        "year": timedelta(days=365)
+    }
+
+    def get_labels(self):
+        return ["" for i in range(self.resolution)]
+
+    def get_providers(self):
+        return [self.kwargs["c_id"]]
+
+    def get_data(self):
+        time_multiplier = int(self.kwargs["length"][0])
+        total_time = self.time_lengths[self.kwargs["length"][1:]] * time_multiplier
+        time_part = total_time / self.resolution
+        start_time = datetime.utcnow() - total_time
+        end_time = start_time + time_part
+        data = []
+
+        for i in range(0, self.resolution):
+            data.append(Candle.objects.filter(currency_id=self.kwargs["c_id"], time__gt=start_time, time__lt=end_time)
+                        .aggregate(avg=Avg((F("low") + F("high")) / 2))["avg"])
+            start_time += time_part
+            end_time += time_part
+
+        return [data]

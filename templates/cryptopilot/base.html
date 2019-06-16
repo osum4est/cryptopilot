@@ -50,10 +50,18 @@ $(document).ready(function() {
     if (typeof(refresh) === 'function')
         refresh();
 
+    if (typeof(refresh_slow) === 'function')
+        refresh_slow();
+
     setInterval(function(){
         if (typeof(refresh) === 'function')
             refresh();
     }, 1000);
+
+    setInterval(function(){
+        if (typeof(refresh_slow) === 'function')
+            refresh_slow();
+    }, 5000);
 });
 </script>
 </html>

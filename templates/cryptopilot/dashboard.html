@@ -1,5 +1,63 @@
 {% extends "cryptopilot/base.html" %}
 
 {% block content %}
+    <canvas id="history_chart"></canvas>
+    <div class="text-center">
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-outline-info active">
+                <input type="radio" name="history_chart_option" id="1hour" autocomplete="off" checked> 1H
+            </label>
+            <label class="btn btn-outline-info">
+                <input type="radio" name="history_chart_option" id="1day" autocomplete="off">1D
+            </label>
+            <label class="btn btn-outline-info">
+                <input type="radio" name="history_chart_option" id="1week" autocomplete="off">1W
+            </label>
+            <label class="btn btn-outline-info">
+                <input type="radio" name="history_chart_option" id="2week" autocomplete="off">2W
+            </label>
+            <label class="btn btn-outline-info">
+                <input type="radio" name="history_chart_option" id="1month" autocomplete="off">1M
+            </label>
+            <label class="btn btn-outline-info">
+                <input type="radio" name="history_chart_option" id="3month" autocomplete="off">3M
+            </label>
+            <label class="btn btn-outline-info">
+                <input type="radio" name="history_chart_option" id="1year" autocomplete="off">1Y
+            </label>
+            <label class="btn btn-outline-info">
+                <input type="radio" name="history_chart_option" id="2year" autocomplete="off">2Y
+            </label>
+        </div>
+    </div>
 
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+    <script>
+        let chart;
+        let config;
+
+        function setup() {
+            $("input[name='history_chart_option']").change(refresh_slow)
+        }
+
+        function refresh_slow() {
+            // TODO: Other currencies
+            let length = $("input[name='history_chart_option']:checked").attr("id");
+            $.get('{% url "get_price_history_graph" "BTC-USD" "length" %}'.replace("length", length),
+                function (data) {
+                    if (config === undefined) {
+                        config = {
+                            type: 'line', data: data
+                        };
+
+                        let ctx = $("#history_chart")[0].getContext("2d");
+                        chart = new Chart(ctx, config);
+                    }
+                    else {
+                        config.data.datasets[0].data = data.datasets[0].data;
+                        chart.update()
+                    }
+                });
+        }
+    </script>
 {% endblock %}
