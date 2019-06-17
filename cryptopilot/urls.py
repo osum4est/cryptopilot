@@ -22,6 +22,7 @@ urlpatterns = [
     path('', RedirectView.as_view(url="dashboard/")),
     path('dashboard/', views.dashboard, name="dashboard"),
     path('simulation/', views.simulation, name="simulation"),
+    path('simulate/<str:trader_id>/', views.simulate, name="simulate"),
     path('data_loader/', views.data_loader, name="data_loader"),
 
     path('trader/', include('crypto_trader.urls'))

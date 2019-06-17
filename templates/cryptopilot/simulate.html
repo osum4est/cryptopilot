@@ -19,7 +19,7 @@
                     let available_traders_tr = $("#available_traders tr");
                     available_traders_tr.css("cursor", "pointer");
                     available_traders_tr.off("click");
-                    available_traders_tr.click(function (e) {
+                    available_traders_tr.click(function () {
                         let trader_id = $($(this).find("td")[0]).html();
                         window.location = "{% url 'simulate' 'trader_id'  %}".replace("trader_id", trader_id);
                     });

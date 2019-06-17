@@ -9,7 +9,22 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" href="https://bootswatch.com/4/darkly/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.css">
+
+    <style>
+        h3 {
+            padding-top: 60px;
+            padding-bottom: 15px;
+        }
+        .table-container {
+            height: min-content;
+            max-height: 500px;
+        }
+    </style>
 
     {# TODO: Put return in title #}
     <title>CryptoPilot</title>
@@ -40,10 +55,9 @@
 </nav>
 
 <body>
-<div class="container mt-5">
+<div class="container">
     {% block content %}{% endblock %}
 </div>
-</body>
 
 <script>
     $(document).ready(function () {
@@ -68,31 +82,25 @@
     });
 
     function fill_table(table, data) {
-        table.html("");
-        let data_container = $("<thead/>");
-
-        $.each(data, function (i, data_row) {
-            let row = $("<tr/>");
-
-            $.each(data_row, function (j, data_value) {
-                let item;
-
-                if (i === 0 || j === 0)
-                    item = $("<th/>");
-                else
-                    item = $("<td/>");
-
-                item.html(data_value);
-                row.append(item)
-            });
-            data_container.append(row);
-            if (i === 0) {
-                table.append(data_container);
-                data_container = $("<tbody/>");
-            }
+        table.bootstrapTable({
+            classes: ["table", "table-hover"],
+            columns: $.map(data[0], function (v) {
+                return {field: v, title: v, sortable: true}
+            }),
+            data: $.map(data.slice(1), function (v) {
+                let data_value = {};
+                $.each(v, function (i, vv) {
+                    data_value[data[0][i]] = vv;
+                });
+                return data_value;
+            })
         });
-
-        table.append(data_container);
+        table.bootstrapTable("resetView");
     }
 </script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.js"></script>
+
+</body>
 </html>

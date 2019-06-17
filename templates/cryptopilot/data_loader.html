@@ -1,8 +1,10 @@
 {% extends "cryptopilot/base.html" %}
 
 {% block content %}
-    <div class="table-responsive">
-        <table id="available_currencies" class="table table-hover">
+    <h3>Available Data:</h3>
+
+    <div class="table-container mb-3">
+        <table id="available_currencies">
         </table>
     </div>
 
@@ -71,6 +73,7 @@
                         download_progress_bar_container.hide();
                     }
                 });
+
             $.get('{% url "get_available_data" %}',
                 function (data) {
                     fill_table($("#available_currencies"), data)

@@ -7,6 +7,7 @@ from django.db.models import Avg, F, Min, Max
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect
 
+from auto_traders.auto_trader import get_auto_traders
 from crypto_trader.models import Candle
 from crypto_trader.trader.price_downloader import download_prices_task
 
@@ -55,6 +56,14 @@ def get_available_data(request):
         [list(d.values()) for d in
          Candle.objects.values("currency_id").annotate(Min("time"), Max("time"), Min("low"), Max("high"))])
     return HttpResponse(json.dumps(data, default=default_json), content_type='application/json')
+
+
+def get_available_traders(request):
+    data = [["ID", "Name", "Description", "Version", "Last Run", "Last Run Profits"]]
+    data.extend(
+        [[t.get_id(), t.get_name(), t.get_description(), t.get_version()] for t in get_auto_traders()]
+    )
+    return HttpResponse(json.dumps(data), content_type='application/json')
 
 
 def default_json(value):
