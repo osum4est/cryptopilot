@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'crypto_trader.apps.CryptoTraderConfig',
     'crypto_coinbase.apps.CryptoCoinbaseConfig',
+    'auto_traders.apps.AutoTradersConfig',
     'bootstrap4',
     'livereload',
     'chartjs',
