@@ -1,0 +1,29 @@
+{% extends "cryptopilot/base.html" %}
+
+{% block head_extra %}
+    <style>
+        #available_traders tbody tr {
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h3>Available Auto-Traders:</h3>
+    <table id="available_traders"></table>
+
+    <script>
+        function setup() {
+            let table = $("#available_traders");
+            make_table(table, "{% url 'get_traders_table' %}");
+
+            table.on("click", "tbody tr", function (e) {
+                let trader_id = $($(this).find("td")[0]).html();
+                window.location = "{% url "trade_sessions" "trader_id" %}".replace("trader_id", trader_id);
+            });
+        }
+
+        function refresh() {
+        }
+    </script>
+{% endblock %}

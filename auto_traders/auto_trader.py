@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
 
-def get_auto_trader(name):
-    return next(t for t in get_auto_traders() if t.get_name() == name)
+def get_auto_trader(trader_id):
+    return next(t for t in get_auto_traders() if t.get_id() == trader_id)
 
 
 def get_auto_traders():

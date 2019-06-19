@@ -3,9 +3,8 @@
 {% block content %}
     <h3>Available Data:</h3>
 
-    <div class="table-container mb-3">
-        <table id="available_currencies">
-        </table>
+    <div class="mb-3">
+        <table id="available_currencies"></table>
     </div>
 
     <div class="modal fade" role="dialog" id="download-dialog" aria-labelledby="download-dialog-title"
@@ -54,6 +53,8 @@
             download_progress_bar = $("#download-progress-bar");
             download_progress_bar_container = $("#download-progress-bar-container");
             download_progress_bar_container.hide();
+
+            make_table($("#available_currencies"), '{% url "get_available_data" %}')
         }
 
         function refresh() {
@@ -72,11 +73,6 @@
                     } else {
                         download_progress_bar_container.hide();
                     }
-                });
-
-            $.get('{% url "get_available_data" %}',
-                function (data) {
-                    fill_table($("#available_currencies"), data)
                 });
         }
     </script>

@@ -7,8 +7,9 @@ from django.db.models import Avg, F, Min, Max
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect
 
-from auto_traders.auto_trader import get_auto_traders
-from crypto_trader.models import Candle
+from auto_traders.auto_trader import get_auto_traders, get_auto_trader
+from crypto_trader.datatable_view import DatatableView
+from crypto_trader.models import Candle, TradeSession, AutoTrader
 from crypto_trader.trader.price_downloader import download_prices_task
 
 download_task_id = ""
@@ -50,20 +51,33 @@ def download_prices_progress(request):
     return HttpResponse(json.dumps(data), content_type='application/json')
 
 
-def get_available_data(request):
-    data = [["Currency", "Start Date", "End Date", "Min Price", "Max Price"]]
-    data.extend(
-        [list(d.values()) for d in
-         Candle.objects.values("currency_id").annotate(Min("time"), Max("time"), Min("low"), Max("high"))])
-    return HttpResponse(json.dumps(data, default=default_json), content_type='application/json')
+class AvailableDataTableView(DatatableView):
+    model = Candle
+    columns = ["currency_id", "start_date", "end_date", "min_price", "max_price"]
+
+    def get_initial_queryset(self):
+        return Candle.objects.values("currency_id").annotate(
+            start_date=Min("time"), end_date=Max("time"), min_price=Min("low"), max_price=Max("high"))
 
 
-def get_available_traders(request):
-    data = [["ID", "Name", "Description", "Version", "Last Run", "Last Run Profits"]]
-    data.extend(
-        [[t.get_id(), t.get_name(), t.get_description(), t.get_version()] for t in get_auto_traders()]
-    )
-    return HttpResponse(json.dumps(data), content_type='application/json')
+class TradersTableView(DatatableView):
+    model = AutoTrader
+    columns = ["trader_id", "name", "description", "version", "last_run", "last_run_return"]
+
+    def get_initial_queryset(self):
+        # We have to add the local scripts to the database first, since datatables only work with models
+        # TODO: Run this on server startup as well
+        for trader in get_auto_traders():
+            AutoTrader.objects.update_or_create(trader_id=trader.get_id())
+
+        return AutoTrader.objects.all()
+
+    def get_custom_columns(self, row, column):
+        return {
+            "name": get_auto_trader(row.trader_id).get_name,
+            "description": get_auto_trader(row.trader_id).get_description,
+            "version": get_auto_trader(row.trader_id).get_version,
+        }
 
 
 def default_json(value):
@@ -71,6 +85,14 @@ def default_json(value):
         return value.strftime("%m/%d/%Y")
 
     return str(value)
+
+
+class TradeSessionsTableView(DatatableView):
+    model = TradeSession
+    columns = ["trader", "start_time", "end_time", "start_amount", "end_amount"]
+
+    def get_initial_queryset(self):
+        return TradeSession.objects.filter(trader=self.kwargs["trader_id"])
 
 
 class PriceHistoryGraphView(BaseLineChartView):
@@ -107,3 +129,4 @@ class PriceHistoryGraphView(BaseLineChartView):
             end_time += time_part
 
         return [data]
+

@@ -18,8 +18,13 @@ class Candle(models.Model):
     volume = models.DecimalField(max_digits=12, decimal_places=2)
 
 
+class AutoTrader(models.Model):
+    trader_id = models.CharField(max_length=256, unique=True)
+
+
 class TradeSession(models.Model):
     # TODO: Support taking savings out
+    trader = models.ForeignKey(AutoTrader, to_field="trader_id", on_delete=models.PROTECT)
     start_amount = models.DecimalField(max_digits=12, decimal_places=2)
     start_time = models.DateTimeField()
     end_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True)
@@ -28,10 +33,17 @@ class TradeSession(models.Model):
     active = models.BooleanField()
     creator = models.CharField(max_length=256)
 
+    class Meta:
+        constraints = [
+            models.CheckConstraint(check=models.Q(active=False, end_amount__isnull=False, end_time__isnull=False),
+                                   name="active_false_end_notnull"),
+            models.CheckConstraint(check=models.Q(active=True, end_amount__isnull=True, end_time__isnull=True),
+                                   name="active_true_end_null"),
+        ]
+
 
 class Trade(models.Model):
     currency = models.ForeignKey(Currency, to_field="currency_id", on_delete=models.PROTECT)
-    trader = models.CharField(max_length=256)
     session = models.ForeignKey(TradeSession, on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=12, decimal_places=8)  # TODO: Is this too many/little?
     price = models.DecimalField(max_digits=12, decimal_places=2)

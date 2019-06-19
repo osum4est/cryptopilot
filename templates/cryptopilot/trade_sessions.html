@@ -1,0 +1,13 @@
+{% extends "cryptopilot/base.html" %}
+
+{% block content %}
+    <h3>{{ trader_name }}</h3>
+
+    <table id="simulation_history"></table>
+
+    <script>
+        function setup() {
+            make_table($("#simulation_history"), "{% url "get_trade_sessions_table" trader_id %}");
+        }
+    </script>
+{% endblock %}

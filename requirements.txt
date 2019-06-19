@@ -4,4 +4,5 @@ cbpro
 django-bootstrap4
 django-livereload-server
 django-chartjs
+django-datatables-view
 celery
