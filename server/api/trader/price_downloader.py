@@ -4,9 +4,9 @@ from celery import shared_task, current_task
 from celery.exceptions import Ignore
 from django.conf import settings
 
-from server.crypto_coinbase.coinbase import Coinbase
-from server.crypto_trader.models import Currency, Candle
-from server.crypto_trader.trader import TradeAPI
+from server.tradeapi_coinbase.coinbase import Coinbase
+from server.api.models import Currency, Candle
+from server.api.trader import TradeAPI
 
 trade_client: TradeAPI
 

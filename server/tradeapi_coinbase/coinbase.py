@@ -2,8 +2,8 @@ from datetime import datetime
 
 from cbpro import PublicClient
 
-from server.crypto_trader.models import Currency, Candle
-from server.crypto_trader.trader import TradeAPI
+from server.api.models import Currency, Candle
+from server.api.trader import TradeAPI
 
 
 class Coinbase(TradeAPI):

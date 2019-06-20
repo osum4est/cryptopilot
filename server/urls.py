@@ -13,17 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import RedirectView
+from rest_framework import routers
 
-from server.cryptopilot import views
+from server.api.views import index_view
+
+router = routers.DefaultRouter()
 
 urlpatterns = [
-    path('', RedirectView.as_view(url="dashboard/")),
-    path('dashboard/', views.dashboard, name="dashboard"),
-    path('traders/', views.traders, name="traders"),
-    path('trade_sessions/<str:trader_id>/', views.trade_sessions, name="trade_sessions"),
-    path('data_loader/', views.data_loader, name="data_loader"),
-
-    path('trader/', include('server.crypto_trader.urls'))
+    path('api/', include(router.urls)),
+    path('api/admin/', admin.site.ursl),
+    path(r'^.*', index_view, name='index')
 ]

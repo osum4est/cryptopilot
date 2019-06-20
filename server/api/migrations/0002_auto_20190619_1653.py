@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('crypto_trader', '0001_initial'),
+        ('api', '0001_initial'),
     ]
 
     operations = [
@@ -22,6 +22,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='tradesession',
             name='trader',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='server.crypto_trader.AutoTrader', to_field='trader_id'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='server.api.AutoTrader', to_field='trader_id'),
         ),
     ]

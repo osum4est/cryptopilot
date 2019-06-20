@@ -6,11 +6,16 @@ from chartjs.views.lines import BaseLineChartView
 from django.db.models import Avg, F, Min, Max
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect
+from django.views.decorators.cache import never_cache
+from django.views.generic import TemplateView
 
+from server.api.datatable_view import DatatableView
+from server.api.models import Candle, TradeSession, AutoTrader
+from server.api.trader.price_downloader import download_prices_task
 from server.auto_traders.auto_trader import get_auto_traders, get_auto_trader
-from server.crypto_trader.datatable_view import DatatableView
-from server.crypto_trader.models import Candle, TradeSession, AutoTrader
-from server.crypto_trader.trader.price_downloader import download_prices_task
+
+# Vue Application
+index_view = never_cache(TemplateView.as_view(template_name='index.html'))
 
 download_task_id = ""
 
@@ -129,4 +134,3 @@ class PriceHistoryGraphView(BaseLineChartView):
             end_time += time_part
 
         return [data]
-

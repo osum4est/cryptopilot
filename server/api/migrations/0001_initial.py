@@ -43,8 +43,8 @@ class Migration(migrations.Migration):
                 ('price', models.DecimalField(decimal_places=2, max_digits=12)),
                 ('time', models.DateTimeField()),
                 ('notes', models.CharField(max_length=1024)),
-                ('currency', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='server.crypto_trader.Currency', to_field='currency_id')),
-                ('session', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='server.crypto_trader.TradeSession')),
+                ('currency', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='server.api.Currency', to_field='currency_id')),
+                ('session', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='server.api.TradeSession')),
             ],
         ),
         migrations.CreateModel(
@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
                 ('open', models.DecimalField(decimal_places=2, max_digits=12)),
                 ('close', models.DecimalField(decimal_places=2, max_digits=12)),
                 ('volume', models.DecimalField(decimal_places=2, max_digits=12)),
-                ('currency', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='server.crypto_trader.Currency', to_field='currency_id')),
+                ('currency', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='server.api.Currency', to_field='currency_id')),
             ],
         ),
     ]

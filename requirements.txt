@@ -3,3 +3,4 @@ psycopg2
 cbpro
 django-chartjs
 celery
+djangorestframework
