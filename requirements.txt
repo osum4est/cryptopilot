@@ -4,3 +4,4 @@ cbpro
 django-chartjs
 celery
 djangorestframework
+django-filter

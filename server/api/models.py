@@ -33,13 +33,14 @@ class TradeSession(models.Model):
     active = models.BooleanField()
     creator = models.CharField(max_length=256)
 
-    class Meta:
-        constraints = [
-            models.CheckConstraint(check=models.Q(active=False, end_amount__isnull=False, end_time__isnull=False),
-                                   name="active_false_end_notnull"),
-            models.CheckConstraint(check=models.Q(active=True, end_amount__isnull=True, end_time__isnull=True),
-                                   name="active_true_end_null"),
-        ]
+    # TODO: Fix these constraints
+    # class Meta:
+    #     constraints = [
+    #         models.CheckConstraint(check=models.Q(active=False, end_amount__isnull=False, end_time__isnull=False),
+    #                                name="active_false_end_notnull"),
+    #         models.CheckConstraint(check=models.Q(active=True, end_amount__isnull=True, end_time__isnull=True),
+    #                                name="active_true_end_null"),
+    #     ]
 
 
 class Trade(models.Model):

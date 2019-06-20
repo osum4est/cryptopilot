@@ -17,12 +17,18 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from server.api.views import index_view
+from server.api import views
 
 router = routers.DefaultRouter()
+router.register("traders", views.TraderViewSet)
+router.register("currencies", views.CurrencyViewSet)
+router.register("candles/download", views.CandlesDownloadViewSet, basename="candles/download")
+router.register("candle_overviews", views.CandleOverviewViewSet)
+router.register("trade_sessions", views.TradeSessionViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('api/admin/', admin.site.ursl),
-    path(r'^.*', index_view, name='index')
+
+    path('api/admin/', admin.site.urls),
+    path('', views.index_view, name='index')
 ]

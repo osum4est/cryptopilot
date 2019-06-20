@@ -15,7 +15,10 @@ import os
 
 from django.core.exceptions import ImproperlyConfigured
 
-with open("config.json") as f:
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+with open(os.path.join(BASE_DIR, "config.json")) as f:
     configs = json.loads(f.read())
 
 
@@ -32,9 +35,6 @@ def get_config_var(setting, configs=configs):
         raise ImproperlyConfigured(error_msg)
 
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_config_var("SECRET_KEY")
 
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'server.auto_traders.apps.AutoTradersConfig',
     'chartjs',
     'rest_framework',
+    'django_filters',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -144,6 +145,13 @@ CELERY_RESULT_BACKEND = 'amqp://' + CELERY_USER + ':' + CELERY_PASS + '@localhos
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+# REST
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'PAGE_SIZE': 15
+}
 
 # Which trade api to use
 TRADE_API = "coinbase"

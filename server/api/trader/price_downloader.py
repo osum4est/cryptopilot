@@ -6,7 +6,7 @@ from django.conf import settings
 
 from server.tradeapi_coinbase.coinbase import Coinbase
 from server.api.models import Currency, Candle
-from server.api.trader import TradeAPI
+from server.api.trader.trade_api import TradeAPI
 
 trade_client: TradeAPI
 

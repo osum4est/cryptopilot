@@ -1,16 +1,20 @@
-import json
 from datetime import datetime, timedelta
 
 from celery.result import AsyncResult
 from chartjs.views.lines import BaseLineChartView
 from django.db.models import Avg, F, Min, Max
-from django.http import HttpResponse, HttpResponseNotAllowed
-from django.shortcuts import redirect
+from django.http import HttpResponseNotAllowed
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
+from rest_framework import viewsets, status
+from rest_framework.decorators import api_view, list_route, action, schema
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 
-from server.api.datatable_view import DatatableView
-from server.api.models import Candle, TradeSession, AutoTrader
+from server.api.models import Candle, TradeSession, AutoTrader, Currency
+from server.api.serializers import TraderSerializer, CandleOverviewSerializer, CurrencySerializer, \
+    TradeSessionSerializer
 from server.api.trader.price_downloader import download_prices_task
 from server.auto_traders.auto_trader import get_auto_traders, get_auto_trader
 
@@ -20,84 +24,73 @@ index_view = never_cache(TemplateView.as_view(template_name='index.html'))
 download_task_id = ""
 
 
-def download_prices(request):
-    global download_task_id
-
-    if download_task_id != "":
-        return HttpResponseNotAllowed("Download already running.")
-
-    download_task_id = download_prices_task.delay(request.POST['currency_id']).id
-    return redirect("/data_loader")
+class CurrencyViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Currency.objects.all().order_by("currency_id")
+    serializer_class = CurrencySerializer
 
 
-def download_prices_progress(request):
-    global download_task_id
+class CandlesDownloadViewSet(ViewSet):
+    def list(self, request):
+        global download_task_id
 
-    task = AsyncResult(download_task_id)
-
-    if task.state == 'FAILED':
-        download_task_id = ""
-        return HttpResponse(json.dumps({"error": task.result}), content_type='application/json')
-
-    if task.state != 'PENDING' and task.state != 'PROGRESS':
-        download_task_id = ""
         task = AsyncResult(download_task_id)
 
-    data = {
-        'downloading': download_task_id != "",
-    }
+        if task.state == 'FAILED':
+            download_task_id = ""
+            return Response({"error": task.result})
 
-    if task.state == "PROGRESS":
-        data["progress"] = int(
-            float(task.result['current']) / float(task.result['total']) * 100) if download_task_id != "" else 0
-    else:
-        data["progress"] = "0"
+        if task.state != 'PENDING' and task.state != 'PROGRESS':
+            download_task_id = ""
+            task = AsyncResult(download_task_id)
 
-    return HttpResponse(json.dumps(data), content_type='application/json')
+        data = {
+            'downloading': download_task_id != "",
+        }
+
+        if task.state == "PROGRESS":
+            data["progress"] = int(
+                float(task.result['current']) / float(task.result['total']) * 100) if download_task_id != "" else 0
+        else:
+            data["progress"] = "0"
+
+        return Response(data)
+
+    def create(self, request):
+        global download_task_id
+
+        if "currency_id" not in request.data:
+            return Response({"message": "Include currency id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if download_task_id != "":
+            return Response({"message": "Already downloading data"}, status=status.HTTP_409_CONFLICT)
+
+        download_task_id = download_prices_task.delay(request.data['currency_id']).id
+        return Response(status=status.HTTP_200_OK)
 
 
-class AvailableDataTableView(DatatableView):
-    model = Candle
-    columns = ["currency_id", "start_date", "end_date", "min_price", "max_price"]
-
-    def get_initial_queryset(self):
-        return Candle.objects.values("currency_id").annotate(
-            start_date=Min("time"), end_date=Max("time"), min_price=Min("low"), max_price=Max("high"))
+class CandleOverviewViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Candle.objects.values("currency_id").annotate(
+        start_date=Min("time"), end_date=Max("time"), min_price=Min("low"), max_price=Max("high"))
+    serializer_class = CandleOverviewSerializer
 
 
-class TradersTableView(DatatableView):
-    model = AutoTrader
-    columns = ["trader_id", "name", "description", "version", "last_run", "last_run_return"]
+class TraderViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = AutoTrader.objects.all().order_by("trader_id")
+    serializer_class = TraderSerializer
 
-    def get_initial_queryset(self):
+    def get_queryset(self):
         # We have to add the local scripts to the database first, since datatables only work with models
         # TODO: Run this on server startup as well
         for trader in get_auto_traders():
             AutoTrader.objects.update_or_create(trader_id=trader.get_id())
 
-        return AutoTrader.objects.all()
-
-    def get_custom_columns(self, row, column):
-        return {
-            "name": get_auto_trader(row.trader_id).get_name,
-            "description": get_auto_trader(row.trader_id).get_description,
-            "version": get_auto_trader(row.trader_id).get_version,
-        }
+        return self.queryset
 
 
-def default_json(value):
-    if isinstance(value, datetime):
-        return value.strftime("%m/%d/%Y")
-
-    return str(value)
-
-
-class TradeSessionsTableView(DatatableView):
-    model = TradeSession
-    columns = ["trader", "start_time", "end_time", "start_amount", "end_amount"]
-
-    def get_initial_queryset(self):
-        return TradeSession.objects.filter(trader=self.kwargs["trader_id"])
+class TradeSessionViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = TradeSession.objects.all().order_by("id")
+    serializer_class = TradeSessionSerializer
+    filterset_fields = ("trader",)
 
 
 class PriceHistoryGraphView(BaseLineChartView):
