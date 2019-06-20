@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app :dark="dark">
 
     <v-navigation-drawer
         clipped
@@ -40,6 +40,12 @@
         <span>Crypto</span>
         <span class="font-weight-light">Pilot</span>
       </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <v-btn icon>
+          <v-icon @click="dark = !dark">mdi-brightness-2</v-icon>
+        </v-btn>
+      </v-toolbar-items>
     </v-toolbar>
 
     <v-content>
@@ -56,11 +62,18 @@
 </template>
 
 <script lang="ts">
-    import Vue from "vue";
+    import Vue, {WatchOptions} from "vue";
     import Component from "vue-class-component";
+    import {Watch} from 'vue-property-decorator';
 
     @Component
     export default class App extends Vue {
-        drawer = true
+        drawer = true;
+        dark: boolean = localStorage.dark === "true";
+
+        @Watch('dark')
+        onPropertyChanged(newVal: string, oldVal: string) {
+            localStorage.dark = newVal;
+        }
     };
 </script>
