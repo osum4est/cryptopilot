@@ -5,6 +5,11 @@ from server.auto_traders.auto_trader import get_auto_trader
 
 
 class CurrencySerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='currency-detail',
+        lookup_field='currency_id'
+    )
+
     class Meta:
         model = Currency
         fields = ('url', 'currency_id', 'base_currency', 'quote_currency')

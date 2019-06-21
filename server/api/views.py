@@ -3,20 +3,17 @@ from datetime import datetime, timedelta
 from celery.result import AsyncResult
 from chartjs.views.lines import BaseLineChartView
 from django.db.models import Avg, F, Min, Max
-from django.http import HttpResponseNotAllowed
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 from rest_framework import viewsets, status
-from rest_framework.decorators import api_view, list_route, action, schema
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 
 from server.api.models import Candle, TradeSession, AutoTrader, Currency
 from server.api.serializers import TraderSerializer, CandleOverviewSerializer, CurrencySerializer, \
     TradeSessionSerializer
 from server.api.trader.price_downloader import download_prices_task
-from server.auto_traders.auto_trader import get_auto_traders, get_auto_trader
+from server.auto_traders.auto_trader import get_auto_traders
 
 # Vue Application
 index_view = never_cache(TemplateView.as_view(template_name='index.html'))
@@ -27,6 +24,7 @@ download_task_id = ""
 class CurrencyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Currency.objects.all().order_by("currency_id")
     serializer_class = CurrencySerializer
+    lookup_field = "currency_id"
 
 
 class CandlesDownloadViewSet(ViewSet):
