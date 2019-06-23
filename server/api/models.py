@@ -5,6 +5,7 @@ class Currency(models.Model):
     currency_id = models.CharField(max_length=16, unique=True)
     base_currency = models.CharField(max_length=16)
     quote_currency = models.CharField(max_length=16)
+    name = models.CharField(max_length=64)
 
 
 class Candle(models.Model):

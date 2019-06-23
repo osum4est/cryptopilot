@@ -12,7 +12,7 @@ class CurrencySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Currency
-        fields = ('url', 'currency_id', 'base_currency', 'quote_currency')
+        fields = ('url', 'currency_id', 'base_currency', 'quote_currency', 'name')
 
 
 class CandleOverviewSerializer(serializers.HyperlinkedModelSerializer):

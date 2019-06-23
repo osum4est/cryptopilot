@@ -11,9 +11,13 @@ class Coinbase(TradeAPI):
         self.public_client = PublicClient()
 
     def get_available_currencies(self):
+        # TODO: Update currencies on server startup
+        currency_details = self.public_client.get_currencies()
         return [
             Currency(currency_id=product["id"], base_currency=product["base_currency"],
-                     quote_currency=product["quote_currency"]) for product in self.public_client.get_products()
+                     quote_currency=product["quote_currency"],
+                     name=next(c["name"] for c in currency_details if c["id"] == product["base_currency"]))
+            for product in self.public_client.get_products()
         ]
 
     def get_historic_rates(self, currency_id, start_date, end_date, granularity):
