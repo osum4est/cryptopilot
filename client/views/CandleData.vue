@@ -2,7 +2,7 @@
   <v-container grid-list-xl>
     <v-layout row wrap>
       <v-flex xs3 grow v-for="currency_data in currency_datas">
-        <CurrencyData v-bind:currency_data="currency_data"></CurrencyData>
+        <currency-data v-bind:currency_data="currency_data"></currency-data>
       </v-flex>
     </v-layout>
   </v-container>
