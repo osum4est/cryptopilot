@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-    import Vue, {WatchOptions} from "vue";
+    import Vue from "vue";
     import Component from "vue-class-component";
     import {Watch} from 'vue-property-decorator';
 
@@ -72,8 +72,8 @@
         dark: boolean = localStorage.dark === "true";
 
         @Watch('dark')
-        onPropertyChanged(newVal: string, oldVal: string) {
-            localStorage.dark = newVal;
+        onPropertyChanged(val: string) {
+            localStorage.dark = val;
         }
     };
 </script>

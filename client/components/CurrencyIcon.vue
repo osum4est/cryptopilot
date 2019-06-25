@@ -1,6 +1,5 @@
 <template>
-  <v-img :src="getIconPath" :height="75"
-         contain></v-img>
+  <v-img :src="getIconPath" :height="height" :width="width" contain></v-img>
 </template>
 
 <script lang="ts">
@@ -11,7 +10,11 @@
     @Component
     export default class CurrencyIcon extends Vue {
         @Prop()
-        currency!: string;
+        currency!: Any;
+        @Prop()
+        height!: string;
+        @Prop()
+        width!: string;
 
         get getIconPath() {
             return require('cryptocurrency-icons/svg/color/' + this.currency.base_currency.toLowerCase() + '.svg')
