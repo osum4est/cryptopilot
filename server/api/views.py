@@ -7,6 +7,7 @@ from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 
 from server.api.models import Candle, TradeSession, AutoTrader, Currency
@@ -91,7 +92,7 @@ class TradeSessionViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_fields = ("trader",)
 
 
-class PriceHistoryGraphView(BaseLineChartView):
+class PriceHistoryChartView(BaseLineChartView, ViewSet):
     resolution = 50
     time_lengths = {
         "hour": timedelta(hours=1),
@@ -101,25 +102,32 @@ class PriceHistoryGraphView(BaseLineChartView):
         "year": timedelta(days=365)
     }
 
+    def list(self, request):
+        if "currency_id" not in request.query_params:
+            return Response({"message": "Include currency id"}, status=status.HTTP_400_BAD_REQUEST)
+        if "length" not in request.query_params:
+            return Response({"message": "Include length"}, status=status.HTTP_400_BAD_REQUEST)
+        return super(PriceHistoryChartView, self).get(request)
+
     def get_labels(self):
         return ["" for i in range(self.resolution)]
 
     def get_providers(self):
-        return [self.kwargs["c_id"]]
+        return [self.request.query_params["currency_id"]]
 
     def get_colors(self):
         yield list((242, 169, 0))
 
     def get_data(self):
-        time_multiplier = int(self.kwargs["length"][0])
-        total_time = self.time_lengths[self.kwargs["length"][1:]] * time_multiplier
+        time_multiplier = int(self.request.query_params["length"][0])
+        total_time = self.time_lengths[self.request.query_params["length"][1:]] * time_multiplier
         time_part = total_time / self.resolution
         start_time = datetime.utcnow() - total_time
         end_time = start_time + time_part
         data = []
 
         for i in range(0, self.resolution):
-            data.append(Candle.objects.filter(currency_id=self.kwargs["c_id"], time__gt=start_time, time__lt=end_time)
+            data.append(Candle.objects.filter(currency_id=self.request.query_params["currency_id"], time__gt=start_time, time__lt=end_time)
                         .aggregate(avg=Avg((F("low") + F("high")) / 2))["avg"])
             start_time += time_part
             end_time += time_part

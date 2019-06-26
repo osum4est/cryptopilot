@@ -25,6 +25,7 @@ router.register("currencies", views.CurrencyViewSet)
 router.register("candles/download", views.CandlesDownloadViewSet, basename="candles/download")
 router.register("candle_overviews", views.CandleOverviewViewSet)
 router.register("trade_sessions", views.TradeSessionViewSet)
+router.register("price_history", views.PriceHistoryChartView, basename="price_history")
 
 urlpatterns = [
     path('api/', include(router.urls)),
