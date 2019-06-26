@@ -12,6 +12,7 @@ class Coinbase(TradeAPI):
 
     def get_available_currencies(self):
         # TODO: Update currencies on server startup
+        # TODO: Use cryptocurrency-icons manifest.json for names and colors
         currency_details = self.public_client.get_currencies()
         return [
             Currency(currency_id=product["id"], base_currency=product["base_currency"],

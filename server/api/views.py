@@ -116,7 +116,9 @@ class PriceHistoryChartView(BaseLineChartView, ViewSet):
         return [self.request.query_params["currency_id"]]
 
     def get_colors(self):
-        yield list((242, 169, 0))
+        color = Currency.objects.filter(currency_id=self.request.query_params["currency_id"]).first().color
+        color = color.lstrip("#")
+        yield list(tuple(int(color[i:i+2], 16) for i in (0, 2, 4)))
 
     def get_data(self):
         time_multiplier = int(self.request.query_params["length"][0])
