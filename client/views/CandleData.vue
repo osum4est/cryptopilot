@@ -13,6 +13,7 @@
     import Component from "vue-class-component";
     import axios from "axios";
     import CurrencyOverview from "@/components/CurrencyOverview.vue";
+    import {Currency, CurrencyData} from "@/models";
 
     @Component({
         components: {
@@ -25,10 +26,10 @@
         async mounted() {
             let currencyDataItemsJson = (await axios.get("/api/candle_overviews")).data.results;
             for (let i = 0; i < currencyDataItemsJson.length; i++) {
-                let currencyDataJson = currencyDataItemsJson[i];
-                currencyDataJson.currency =
-                    <Currency> ((await axios.get("/api/currencies/" + currencyDataJson.currency_id)).data);
-                this.currencyDataItems.push(<CurrencyData> currencyDataJson);
+                let currencyData = CurrencyData(currencyDataItemsJson[i]);
+                currencyData.currency =
+                    Currency((await axios.get("/api/currencies/" + currencyData.currencyId)).data);
+                this.currencyDataItems.push(currencyData);
             }
         }
     };

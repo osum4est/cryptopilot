@@ -6,11 +6,12 @@
     import {Prop} from "vue-property-decorator";
     import Component from "vue-class-component";
     import Vue from "vue";
+    import {Currency} from "@/models";
 
     @Component
     export default class CurrencyIcon extends Vue {
         @Prop()
-        currency!: Any;
+        currency!: Currency;
         @Prop()
         height!: string;
         @Prop()
@@ -19,7 +20,7 @@
         position!: string;
 
         get getIconPath() {
-            return require('cryptocurrency-icons/svg/color/' + this.currency.base_currency.toLowerCase() + '.svg')
+            return require('cryptocurrency-icons/svg/color/' + this.currency.baseCurrency.toLowerCase() + '.svg')
         }
     }
 </script>

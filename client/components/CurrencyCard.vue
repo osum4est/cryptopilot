@@ -14,7 +14,7 @@
                   <v-flex mr-0 pr-0 shrink>
                     <span class="display-2">{{ currencyData.currency.name }}</span>
                     <br/>
-                    <span class="subheading font-weight-light">{{ currencyData.currency.currency_id }}</span>
+                    <span class="subheading font-weight-light">{{ currencyData.currency.currencyId }}</span>
                   </v-flex>
 
                   <v-flex ml-0 pl-0 grow>
@@ -95,6 +95,7 @@
     import Component from "vue-class-component";
     import {Prop} from "vue-property-decorator";
     import CurrencyIcon from "@/components/CurrencyIcon.vue";
+    import {CurrencyData} from '@/models';
 
     @Component({
         components: {CurrencyIcon}

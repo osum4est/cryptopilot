@@ -5,7 +5,7 @@ import {Line} from 'vue-chartjs';
 @Component({
     extends: Line,
 })
-export default class CurrencyOverview extends Mixins(Line) {
+export default class PriceHistoryLineChart extends Mixins(Line) {
     @Prop()
     public data!: any;
 

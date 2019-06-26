@@ -12,7 +12,7 @@
         <v-card style="height: 100%; min-height: 265px">
           <v-container style="height: 100%; width: 100%">
             <div class="div-fill-sizer">
-              <currency-graph :currency-data="currencyData"></currency-graph>
+              <price-history-line-chart v-if="chartData" :data="chartData"></price-history-line-chart>
             </div>
           </v-container>
         </v-card>
@@ -25,15 +25,28 @@
 <script lang="ts">
     import Vue from "vue";
     import Component from "vue-class-component";
-    import CurrencyGraph from "@/components/CurrencyGraph.vue";
     import CurrencyCard from "@/components/CurrencyCard.vue";
     import {Prop} from "vue-property-decorator";
+    import axios from "axios";
+    import PriceHistoryLineChart from '@/charts/PriceHistoryLineChart';
+    import {CurrencyData} from "@/models";
 
     @Component({
-        components: {CurrencyGraph, CurrencyCard}
+        components: {CurrencyCard, PriceHistoryLineChart}
     })
     export default class CurrencyOverview extends Vue {
+        chartData: any = null;
+
         @Prop()
         currencyData!: CurrencyData;
+
+          async mounted() {
+            this.chartData = (await axios.get("/api/price_history", {
+              params: {
+                currency_id: this.currencyData.currencyId,
+                length: "2week",
+              },
+            })).data;
+          }
     }
 </script>

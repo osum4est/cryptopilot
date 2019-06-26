@@ -1,16 +1,30 @@
-interface Currency {
-    readonly url: string;
-    readonly currencyId: string;
-    readonly baseCurrency: string;
-    readonly quoteCurrency: string;
-    readonly name: string;
+import _ from 'lodash';
+
+export interface Currency {
+    url: string;
+    currencyId: string;
+    baseCurrency: string;
+    quoteCurrency: string;
+    name: string;
 }
 
-interface CurrencyData {
-    readonly currency: Currency;
-    readonly currencyId: string;
-    readonly startDate: Date;
-    readonly endDate: Date;
-    readonly minPrice: number;
-    readonly maxPrice: number;
+export function Currency(json: any): Currency {
+    return toCamelCase(json) as Currency;
+}
+
+export interface CurrencyData {
+    currency: Currency;
+    currencyId: string;
+    startDate: Date;
+    endDate: Date;
+    minPrice: number;
+    maxPrice: number;
+}
+
+export function CurrencyData(json: any): CurrencyData {
+    return toCamelCase(json) as CurrencyData;
+}
+
+function toCamelCase(json: any): any {
+    return _.mapKeys(json, (v, k) => _.camelCase(k));
 }
