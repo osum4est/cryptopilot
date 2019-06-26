@@ -1,5 +1,5 @@
 <template>
-  <v-img :src="getIconPath" :height="height" :width="width" contain></v-img>
+  <v-img :src="getIconPath" :height="height" :width="width" :position="position" contain></v-img>
 </template>
 
 <script lang="ts">
@@ -15,6 +15,8 @@
         height!: string;
         @Prop()
         width!: string;
+        @Prop()
+        position!: string;
 
         get getIconPath() {
             return require('cryptocurrency-icons/svg/color/' + this.currency.base_currency.toLowerCase() + '.svg')

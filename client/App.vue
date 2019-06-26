@@ -77,3 +77,19 @@
         }
     };
 </script>
+
+<style>
+  .div-fill-sizer {
+    position: relative;
+    height: 100%;
+    width: 100%
+  }
+
+  .div-fill-sizer * {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+</style>

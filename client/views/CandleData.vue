@@ -1,8 +1,8 @@
 <template>
   <v-container grid-list-xl>
     <v-layout row wrap>
-      <v-flex xs3 grow v-for="currency_data in currency_datas">
-        <currency-data v-bind:currency_data="currency_data"></currency-data>
+      <v-flex xs12 grow v-for="currencyData in currencyDataItems">
+        <currency-overview v-bind:currency-data="currencyData"></currency-overview>
       </v-flex>
     </v-layout>
   </v-container>
@@ -11,29 +11,25 @@
 <script lang="ts">
     import Vue from "vue";
     import Component from "vue-class-component";
-    import CurrencyData from "@/components/CurrencyData.vue";
     import axios from "axios";
+    import CurrencyOverview from "@/components/CurrencyOverview.vue";
 
     @Component({
         components: {
-            CurrencyData,
+            CurrencyOverview
         }
     })
     export default class CandleData extends Vue {
-        currency_datas!: Any[] = [];
+        currencyDataItems: CurrencyData[] = [];
 
-        mounted() {
-            axios.get("/api/candle_overviews")
-                .then(res => {
-                    for (let i = 0; i < res.data.results.length; i++) {
-                        let result = res.data.results[i];
-                        axios.get("/api/currencies/" + result.currency_id)
-                            .then(res => {
-                                result.currency = res.data;
-                                this.currency_datas.push(result);
-                            });
-                    }
-                });
+        async mounted() {
+            let currencyDataItemsJson = (await axios.get("/api/candle_overviews")).data.results;
+            for (let i = 0; i < currencyDataItemsJson.length; i++) {
+                let currencyDataJson = currencyDataItemsJson[i];
+                currencyDataJson.currency =
+                    <Currency> ((await axios.get("/api/currencies/" + currencyDataJson.currency_id)).data);
+                this.currencyDataItems.push(<CurrencyData> currencyDataJson);
+            }
         }
     };
 </script>
