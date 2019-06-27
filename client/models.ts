@@ -6,6 +6,7 @@ export interface Currency {
     baseCurrency: string;
     quoteCurrency: string;
     name: string;
+    icon: string;
 }
 
 export function Currency(json: any): Currency {

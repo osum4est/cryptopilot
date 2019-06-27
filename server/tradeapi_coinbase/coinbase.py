@@ -4,6 +4,7 @@ from cbpro import PublicClient
 
 from server.api.models import Currency, Candle
 from server.api.trader.trade_api import TradeAPI
+from server.resources import cryptocurrency_icons
 
 
 class Coinbase(TradeAPI):
@@ -12,12 +13,11 @@ class Coinbase(TradeAPI):
 
     def get_available_currencies(self):
         # TODO: Update currencies on server startup
-        # TODO: Use cryptocurrency-icons manifest.json for names and colors
-        currency_details = self.public_client.get_currencies()
         return [
             Currency(currency_id=product["id"], base_currency=product["base_currency"],
                      quote_currency=product["quote_currency"],
-                     name=next(c["name"] for c in currency_details if c["id"] == product["base_currency"]))
+                     name=cryptocurrency_icons.get_currency_name(product["base_currency"]),
+                     color=cryptocurrency_icons.get_currency_color(product["base_currency"]))
             for product in self.public_client.get_products()
         ]
 

@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from server.api.models import AutoTrader, Candle, Currency, TradeSession
 from server.auto_traders.auto_trader import get_auto_trader
+from server.resources import cryptocurrency_icons
 
 
 class CurrencySerializer(serializers.HyperlinkedModelSerializer):
@@ -9,10 +10,15 @@ class CurrencySerializer(serializers.HyperlinkedModelSerializer):
         view_name='currency-detail',
         lookup_field='currency_id'
     )
+    icon = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_icon(obj):
+        return cryptocurrency_icons.get_currency_icon_url(obj.base_currency)
 
     class Meta:
         model = Currency
-        fields = ('url', 'currency_id', 'base_currency', 'quote_currency', 'name')
+        fields = ('url', 'currency_id', 'base_currency', 'quote_currency', 'name', 'icon')
 
 
 class CandleOverviewSerializer(serializers.HyperlinkedModelSerializer):

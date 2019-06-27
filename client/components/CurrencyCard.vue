@@ -20,8 +20,8 @@
                   <v-flex ml-0 pl-0 grow>
                     <div class="div-fill-sizer">
                       <!-- Sometimes right side of icon gets slightly cut off, so width/height need to be 99% -->
-                      <currency-icon id="currency_icon" :currency="currencyData.currency" position="right"
-                                     width="99%" height="99%"></currency-icon>
+                      <v-img id="currency_icon" :src="currencyData.currency.icon" position="right"
+                                     width="99%" height="99%" contain></v-img>
                     </div>
                   </v-flex>
 
@@ -94,12 +94,9 @@
     import Vue from "vue";
     import Component from "vue-class-component";
     import {Prop} from "vue-property-decorator";
-    import CurrencyIcon from "@/components/CurrencyIcon.vue";
     import {CurrencyData} from '@/models';
 
-    @Component({
-        components: {CurrencyIcon}
-    })
+    @Component
     export default class CurrencyCard extends Vue {
         @Prop()
         currencyData!: CurrencyData;
