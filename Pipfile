@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+psycopg2 = "*"
+cbpro = "*"
+django-chartjs = "*"
+celery = "*"
+djangorestframework = "*"
+django-filter = "*"
+whitenoise = "*"
+Django = "==2.2.2"
+socksync-django = {git = "https://github.com/osum4est/socksync-django"}
+
+[requires]
+python_version = "3.7"

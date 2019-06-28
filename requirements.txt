@@ -1,8 +1,0 @@
-Django==2.2.2
-psycopg2
-cbpro
-django-chartjs
-celery
-djangorestframework
-django-filter
-whitenoise
