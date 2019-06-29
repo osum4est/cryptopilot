@@ -41,9 +41,9 @@ SECRET_KEY = get_config_var("SECRET_KEY")
 # Application definition
 
 INSTALLED_APPS = [
-    'server.api.apps.ApiConfig',
-    'server.tradeapi_coinbase.apps.TradeAPICoinbaseConfig',
-    'server.auto_traders.apps.AutoTradersConfig',
+    'server.api',
+    'server.tradeapi_coinbase',
+    'server.auto_traders',
     'chartjs',
     'rest_framework',
     'django_filters',
