@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'server.api',
     'server.tradeapi_coinbase',
     'server.auto_traders',
+    'socksync',
+    'channels',
     'chartjs',
     'rest_framework',
     'django_filters',
@@ -162,3 +164,14 @@ REST_FRAMEWORK = {
 
 # Which trade api to use
 TRADE_API = "coinbase"
+
+# SockSync Channel
+ASGI_APPLICATION = "socksync.routing.application"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
