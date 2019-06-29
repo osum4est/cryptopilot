@@ -14,7 +14,7 @@ djangorestframework = "*"
 django-filter = "*"
 whitenoise = "*"
 Django = "==2.2.2"
-socksync-django = {git = "https://github.com/osum4est/socksync-django"}
+django-socksync = {git = "https://github.com/osum4est/django-socksync"}
 
 [requires]
 python_version = "3.7"

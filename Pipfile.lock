@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "38e32a2e755bea2d22a28e5ce0fa2b17116ac4e0a40a6c7c73eda89446378936"
+            "sha256": "44d5b3d5e4dd4500075b9d6b6ca5cf96f7ed8ffe1faf3acb15c7b00323f72ee7"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -68,6 +68,10 @@
             ],
             "index": "pypi",
             "version": "==2.1.0"
+        },
+        "django-socksync": {
+            "git": "https://github.com/osum4est/django-socksync",
+            "ref": "21641d902d3581c60dd037f296d81ce7501aa448"
         },
         "djangorestframework": {
             "hashes": [
@@ -161,10 +165,6 @@
                 "sha256:105f8d68616f8248e24bf0e9372ef04d3cc10104f1980f54d57b2ce73a5ad56a"
             ],
             "version": "==1.10.0"
-        },
-        "socksync-django": {
-            "git": "https://github.com/osum4est/socksync-django",
-            "ref": "5b374940dca85161c3d875636bc838b6ea824896"
         },
         "sortedcontainers": {
             "hashes": [
