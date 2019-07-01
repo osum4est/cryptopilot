@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'server.tradeapi_coinbase',
     'server.auto_traders',
     'socksync',
-    'channels',
     'chartjs',
     'rest_framework',
     'django_filters',
@@ -56,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',  # < Per Whitenoise, to disable built in
     'django.contrib.staticfiles',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -166,7 +166,7 @@ REST_FRAMEWORK = {
 TRADE_API = "coinbase"
 
 # SockSync Channel
-ASGI_APPLICATION = "socksync.routing.application"
+ASGI_APPLICATION = "server.routing.application"
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
