@@ -13,7 +13,7 @@ celery = "*"
 djangorestframework = "*"
 django-filter = "*"
 whitenoise = "*"
-Django = "==2.2.2"
+Django = "==2.2.20"
 django-socksync = {git = "https://github.com/osum4est/django-socksync"}
 channels = "*"
 channels-redis = "*"
